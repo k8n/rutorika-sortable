@@ -6,12 +6,12 @@ require_once 'stubs/M2mRelatedEntity.php';
 
 class SortableControllerSpecificDatabaseTest extends Orchestra\Testbench\TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->loadMigrationsFrom([
             '--database' => 'testbench',
-            '--realpath' => realpath(__DIR__ . '/migrations'),
+            '--path' => realpath(__DIR__ . '/migrations'),
         ]);
 
         for ($i = 1; $i <= 30; ++$i) {

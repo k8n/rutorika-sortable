@@ -2,11 +2,7 @@
 
 ## Laravel 5 - Demo
 
-* http://sortable5.boxfrommars.ru/
-* http://sortable5.boxfrommars.ru/grouped (sortable groups demo)
-* http://sortable5.boxfrommars.ru/posts (many to many demo)
-
-(demo repo code: https://github.com/boxfrommars/rutorika-sortable-demo5)
+https://github.com/boxfrommars/rutorika-sortable-demo5
 
 ## Install
 
@@ -24,6 +20,8 @@ composer require rutorika/sortable
  5.4      | 3.4.x
  5.5      | 4.2.x
  5.7      | 4.7.x
+ 6.0      | 6.0.x
+ 7.x, 8.x | 8.x.x
 
 ## Sortable Trait
 
