@@ -21,22 +21,49 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 trait SortableTrait
 {
     /**
-     * Adds position to model on creating event.
+     * Adds position to model on creating event; reset order on sortable group change.
      */
     public static function bootSortableTrait()
     {
         static::creating(
             function ($model) {
                 /* @var Model $model */
-                $sortableField = static::getSortableField();
-                $query = static::applySortableGroup(static::on($model->getConnectionName()), $model);
-
-                // only automatically calculate next position with max+1 when a position has not been set already
-                if ($model->$sortableField === null) {
-                    $model->setAttribute($sortableField, $query->max($sortableField) + 1);
-                }
+                self::_setOrder($model);
             }
         );
+
+        static::saving(
+            function ($model) {
+                /* @var Model $model */
+                // Trusting isDirty(), not calling checkSortableGroupField to confirm
+                if ($model->exists && $model->isDirty(static::getSortableGroupField())) {
+                    $sortableField = static::getSortableField();
+
+                    // signal to reset order
+                    $model->$sortableField = null;
+                }
+
+                self::_setOrder($model);
+            }
+        );
+    }
+
+    /**
+     * Set model order if not set.
+     *
+     * @param Model $model
+     */
+    private static function _setOrder(Model $model)
+    {
+        /* @var Model $model */
+        $sortableField = static::getSortableField();
+        $query = static::applySortableGroup(static::on($model->getConnectionName()), $model);
+
+        // only automatically calculate next position with max+1 when a position has not been set already
+        // i.e. move the model to the end of the group if order is not set
+        if ($model->$sortableField === null) {
+            $model->setAttribute($sortableField, $query->max($sortableField) + 1);
+        }
     }
 
     /**
@@ -290,7 +317,7 @@ trait SortableTrait
             return;
         }
 
-        if ($entity1->$field !== $entity2->$field) {
+        if ($entity1->$field != $entity2->$field) {
             throw new SortableException($entity1->$field, $entity2->$field);
         }
     }

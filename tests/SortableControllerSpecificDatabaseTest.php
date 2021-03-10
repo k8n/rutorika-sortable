@@ -9,6 +9,7 @@ class SortableControllerSpecificDatabaseTest extends Orchestra\Testbench\TestCas
     public function setUp(): void
     {
         parent::setUp();
+        $this->withoutExceptionHandling();
         $this->loadMigrationsFrom([
             '--database' => 'testbench',
             '--path' => realpath(__DIR__ . '/migrations'),
